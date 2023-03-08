@@ -1,0 +1,20 @@
+name: Decrypt key
+
+on:
+  push:
+    branch:
+      - david-dev
+
+jobs:
+  my-job:
+    name: Decrypt
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Decrypt large secret
+        run: ./decrypt_secret.sh
+        env:
+          SECRET_KEY_PASSWORD: ${{ secrets.SECRET_KEY_PASSWORD }}
+      # This command is just an example to show your secret being printed
+      # Ensure you remove any print statements of your secrets. GitHub does
+      # not hide secrets that use this workaround.
