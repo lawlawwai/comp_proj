@@ -2,10 +2,15 @@ FROM python
 
 WORKDIR /chatbot
 
+#ARG secret_key
+
 ARG secret_key
-ENV secret_key=$secret_key
+ARG BOTAPIKEYBUILD
+ENV BOTAPIKEY=$BOTAPIKEYBUILD
+
 COPY firebase-key.json.gpg ./
-CMD ["sh","decrypt_secret.sh","$secret_key"]
+COPY decrypt_secret.sh ./
+RUN sh ./decrypt_secret.sh $secret_key
 
 COPY requirements.txt ./
 
