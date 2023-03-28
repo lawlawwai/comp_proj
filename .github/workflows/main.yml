@@ -1,25 +1,32 @@
 name: Deploy to Railway
+
 on:
   push:
-    branches:
-      - main
+    branches: [main]
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v2
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Use Node 12
+        uses: actions/setup-node@v1
         with:
-          node-version: '14.x'
-      - name: Install dependencies
-        run: npm install
-      - name: Build the app
-        run: npm run build
-      - name: Deploy to Railway
-        uses: railstack/railway@v0.5.2
-        with:
-          args: deploy --env production --build-args "NODE_ENV=production"
+          node-version: 12.x
+
+      - name: Install packages
+        run: yarn install --frozen-lockfile
+
+      - name: Run tests
+        run: yarn test
+
+      - name: Install Railway
+        run: npm i @railway/cli
+
+      - name: Deploy
+        run: railway up
         env:
-          RAILWAY_API_KEY: 7c3bc8e7-884b-4fcd-97ba-a0b3cbbd3d56
-#          RAILWAY_API_KEY: ${{ secrets.RAILWAY_API_KEY }}
+          RAILWAY_TOKEN: 7c3bc8e7-884b-4fcd-97ba-a0b3cbbd3d56
