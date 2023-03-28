@@ -1,20 +1,32 @@
-name: Decrypt key
+name: Deploy to Railway
 
 on:
   push:
-    branch:
-      - david-dev
+    branches: [main]
 
 jobs:
-  my-job:
-    name: Decrypt
+  deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
-      - name: Decrypt large secret
-        run: ./decrypt_secret.sh
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Use Node 12
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+
+      - name: Install packages
+        run: yarn install --frozen-lockfile
+
+      - name: Run tests
+        run: yarn test
+
+      - name: Install Railway
+        run: npm i -g @railway/cli
+
+      - name: Deploy
+        run: railway up
         env:
-          SECRET_KEY_PASSWORD: ${{ secrets.SECRET_KEY_PASSWORD }}
-      # This command is just an example to show your secret being printed
-      # Ensure you remove any print statements of your secrets. GitHub does
-      # not hide secrets that use this workaround.
+          RAILWAY_TOKEN: 7c3bc8e7-884b-4fcd-97ba-a0b3cbbd3d56
